@@ -54,30 +54,45 @@ class Booking_model extends CI_Model {
 	}
 
 	// -----------------------------------------------------------------------------
-	//проверка дня недели
+	//проверка что в этот день работает бронь
 
 	function check_day($day,$config)
 	{
-		//if($config['holiday']==1) e
-		$date = date("Y-m");
-		if(strlen($day)<2) $day=$date.'-0'.$day; else $day = $date.'-'.$day;
-		if($config['holiday']==1){
-			$holiday_rus = $this->System_model->holiday_russia();
-			$holiday = array_search($day,$holiday_rus);
+		if($config['booking_disabled']=="1") $temp=true; else {
+			if($config['booking_on']=="0")
+			{
+				if($config['booking_period']=="1")
+				{
+					$t1 = $this->System_model->number_of_day($config['booking_start'],$day.".".date("m.Y"));
+					$t2 = $this->System_model->number_of_day($day.".".date("m.Y"),$config['booking_end']);
+					if($t1>=0 OR $t2>=0) $temp=false; else $temp=true;
+				}else {
+					$t1 = $this->System_model->number_of_day($config['booking_start'],$day.".".date("m.Y"));
+					if($t1>=0) $temp=false;
+				}
+			}else $temp=false;
 		}
-		if(empty($holiday)){
-		$d = date('w',strtotime($day));
-			switch ($d) {
-				case 0: $result = $config['sunday']; break;
-				case 1: $result = $config['monday']; break;
-				case 2: $result = $config['tuesday']; break;
-				case 3: $result = $config['wednesday']; break;
-				case 4: $result = $config['thursday']; break;
-				case 5: $result = $config['friday']; break;
-				case 6: $result = $config['saturday']; break;
-				default: $result = 0; break;
+		if(!empty($temp)) $result="0"; else {
+			$date = date("Y-m");
+			if(strlen($day)<2) $day=$date.'-0'.$day; else $day = $date.'-'.$day;
+			if($config['holiday']=="1"){
+				$holiday_rus = $this->System_model->holiday_russia();
+				$holiday = array_search($day,$holiday_rus);
 			}
-		} else $result = "0";
+			if(empty($holiday)){
+				$d = date('w',strtotime($day));
+				switch ($d) {
+					case 0: $result = $config['sunday']; break;
+					case 1: $result = $config['monday']; break;
+					case 2: $result = $config['tuesday']; break;
+					case 3: $result = $config['wednesday']; break;
+					case 4: $result = $config['thursday']; break;
+					case 5: $result = $config['friday']; break;
+					case 6: $result = $config['saturday']; break;
+					default: $result = "0"; break;
+				}
+			} else $result = "0";
+		}
 		return $result;
 	}
 
@@ -148,7 +163,7 @@ class Booking_model extends CI_Model {
 			{
 				$check = $this->check_text($value); // проверяем каждую переменную
 				if($check!='' or $key=='middlename_user') $result[$key]=$check; // после проверки собираем массив
-				else $result['error']=array('ошибка','Ошибка!','данные содержат запрещенные символы!'); //при найденной ошибке
+				else $result['error']='Данные содержат запрещенные символы!'; //при найденной ошибке
 			}
 		$result['date'] = $this->uri->segment(3, 0); // получаем дату бронирования через URl
 				if($result['date']!=0) //проверяем на ошибки
@@ -156,6 +171,9 @@ class Booking_model extends CI_Model {
 						$result['date']=coding($result['date'],true);
 						$result['date']=str_replace('/','.',$result['date']); //работа с датой
 					}
+		$temp_d=explode('.',$result['date']);
+		$checkday = $this->check_day($temp_d[0],$config); // проверяем попадает ли выбранная дата в диапозон работы
+		if ($checkday == "0") $result['error']="В выбранную вами дату, бронирование отключено!";
 		$info_error = $this->check_array_booking($result); // проверяем все ли поля заполнены пользователем
 		if(!empty($info_error))  //проверяе есть ли какие либо ошибки
 			{

@@ -26,10 +26,10 @@ class Calendar extends CI_Controller {
 		$data = $this->Booking_model->generate_link_booking($this->data['settings']);
 		$data['calendar'] = $this->calendar->generate(false,false,$data);
 		$this->load->view('top',$this->data); //загружаем топ
-		
+
 		$block_booking = $this->System_model->check_booking_on(); // проверка, доступно ли бронирование.
 		if($block_booking) $this->load->view('block_dialog',$block_booking); //если бронь недосупна выводим причину...
-		
+
 		$this->load->view('Calendar_index',$data);
 		$this->load->view('footer');
 	}
@@ -44,11 +44,12 @@ class Calendar extends CI_Controller {
 			{
 				if(!empty($result_add['error']))
 					{
-						$error = $this->System_model->message_view('ошибка','Бронирование отменено по причине:',$result_add['error'],true);
+						$error = $this->System_model->message_view('ошибка','Бронирование отменено по причине:',$result_add['error']);
+						$this->data['error']=$error;
 					}else
 				{
 					if($this->data['settings']['automatic_confirmation']==1) $a_c = ' Ваша бронь подтверждена!'; else $a_c='';
-					$error = $this->System_model->message_view('удачно','Успешно!','Ваш номер бронирования: '.$result_add.$a_c,true);
+					$error = $this->System_model->message_view('удачно','Успешно!','Ваш номер бронирования: '.$result_add.$a_c);
 					$this->data['error']=$error;
 				}
 			}

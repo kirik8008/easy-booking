@@ -46,7 +46,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				</div>
 			</div>
 	</div>
-		<nav class="navbar navbar-expand-md navbar-dark bg-secondary">
+		<nav class="navbar navbar-expand-md bg-secondary navbar-dark">
 			 <a class="navbar-brand" href="<?=base_url()?>"><?=$settings['name_site'];?></a>
 			 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 				 <span class="navbar-toggler-icon"></span>
@@ -70,5 +70,4 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				 </form>
 			 </div>
 		 </nav>
-
 <? if(!empty($error)) echo $error;?>
