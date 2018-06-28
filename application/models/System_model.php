@@ -16,7 +16,7 @@ class System_model extends CI_Model {
 // -----------------------------------------------------------------------------
 /*функция подсчета дней между датами.
 data1 - начало, data2 - конец
-если выводит отрицательное число, значит в data1 указана дата позже даты data2 
+если выводит отрицательное число, значит в data1 указана дата позже даты data2
 */
 
 	function number_of_day($data1,$data2)
@@ -131,7 +131,16 @@ data1 - начало, data2 - конец
 			'time_work_start' => '09:00', //время первой брони.
 			'time_work_finish' => '18:00', //время последней брони.
 			'time_booking' => '30', //время одного бронирования(минуты)
-			'count_booking' => '18' //количество возможных бронирований
+			'count_booking' => '18', //количество возможных бронирований
+			'user_account' => '1', // Включение личного кабинета пользователя
+			'api_booking' => '0', //API
+			'notification_email' => '0', //уведомление пользователей по email
+			'notification_sms' =>  '0', //уведомление пользователей по sms
+			'smtp_host' => '',
+			'smtp_user' => '',
+			'smtp_pass' => '',
+			'smtp_port' => '',
+			'mailtype' => ''
 		);
 		return $array;
 	}
@@ -141,10 +150,11 @@ data1 - начало, data2 - конец
 
 	function check_booking_on_config($array)
 	{
-		$b = $array['booking_status'];
-		$a="0";
-		switch($b)
-			{
+		if(!empty($array['post_booking'])) {
+			$b = $array['booking_status'];
+			$a="0";
+			switch($b)
+				{
 				//если бронирование отключено
 				case "0": {	$array['booking_on']=$a;
 										$array['booking_disabled']='1';
@@ -170,8 +180,9 @@ data1 - начало, data2 - конец
 										$array['booking_disabled']=$a;
 										$array['booking_available']=$a;
 										$array['booking_period']='1'; break;}
+				}
+				unset($array['booking_status']);
 			}
-		unset($array['booking_status']);
 		return $array;
 	}
 
@@ -192,9 +203,11 @@ data1 - начало, data2 - конец
 					$this->db->where('KEY_CONFIG',$key);
 					$this->db->update('CONFIG',array('VALUE'=>$value));
 				}
-			if($array['holiday']=='on') $this->download_calendar_holiday();
-			if($array['holiday']=='off') {
-				if(file_exists("./sag/config/calendar.xml")) unlink('./sag/config/calendar.xml');
+			if(!empty($array['post_booking'])) {
+				if($array['holiday']=='on') $this->download_calendar_holiday();
+				if($array['holiday']=='off') {
+					if(file_exists("./sag/config/calendar.xml")) unlink('./sag/config/calendar.xml');
+				}
 			}
 			$this->recreate(); //пересоздаем файл конфигурации
 			$result = $this->message_view('удачно','Сохранено.','');

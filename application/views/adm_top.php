@@ -55,7 +55,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cogs"></i> Настройки&nbsp;</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#"><i class="fa fa-sitemap"></i> Сайт</a>
+              <a class="dropdown-item" href="<?=base_url();?>administrator/configure/site"><i class="fa fa-sitemap"></i> Сайт</a>
               <a class="dropdown-item" href="<?=base_url();?>administrator/configure/booking"><i class="fa fa-bookmark"></i> Бронирование</a>
             </div>
           </li>

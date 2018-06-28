@@ -38,7 +38,7 @@ class Administrator extends CI_Controller {
 	public function configure($page)
 	{
 		$result[] = '';
-		if(!empty($_POST['post_booking']))
+		if(!empty($_POST['post_booking']) or !empty($_POST['post_site']))
 			{
 				$result['result'] = $this->System_model->save_config($_POST);
 				$this->data['settings'] = $this->System_model->settings;
@@ -48,7 +48,7 @@ class Administrator extends CI_Controller {
 		$data_settings['time']=$this->Booking_model->generate_add_form($this->data['settings']);
 		switch($page)
 		{
-			case "site": { break;}
+			case "site": {$this->load->view('adm_configure_site',$data_settings); $this->load->model('Email_model'); break;}
 			case "booking": {$this->load->view('adm_configure_booking',$data_settings); break;}
 			default: echo 'test';
 		}
