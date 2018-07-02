@@ -453,7 +453,7 @@ $config['csrf_token_name'] = 'csrf_calendar_t';
 $config['csrf_cookie_name'] = 'csrf_calendar_c';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
-$config['csrf_exclude_uris'] = array('administrator/search_booking','view/search');
+$config['csrf_exclude_uris'] = array('administrator/search_booking','view/search','administrator/send_message/sms','administrator/send_message/email');
 
 
 /*

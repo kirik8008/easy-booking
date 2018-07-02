@@ -29,6 +29,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 </head>
 <body>
+
+	<div class="modal" id="service_dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Панель администратора</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body" id="service_div">
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+					</div>
+				</div>
+			</div>
+	</div>
+
 <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
     <div class="container">
       <a class="navbar-brand" href="#">Администратора панель</a>

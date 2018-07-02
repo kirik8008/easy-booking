@@ -136,10 +136,13 @@ data1 - начало, data2 - конец
 			'api_booking' => '0', //API
 			'notification_email' => '0', //уведомление пользователей по email
 			'notification_sms' =>  '0', //уведомление пользователей по sms
+			'sms_api' => '', // sms api
+			'phone_admin' => '', // Номер телефона администратора.
+			'email_admin' => '', // Почта администратора.
 			'smtp_host' => '',
 			'smtp_user' => '',
 			'smtp_pass' => '',
-			'smtp_port' => '',
+			'smtp_port' => '465',
 			'mailtype' => ''
 		);
 		return $array;

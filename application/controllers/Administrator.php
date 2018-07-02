@@ -48,7 +48,7 @@ class Administrator extends CI_Controller {
 		$data_settings['time']=$this->Booking_model->generate_add_form($this->data['settings']);
 		switch($page)
 		{
-			case "site": {$this->load->view('adm_configure_site',$data_settings); $this->load->model('Email_model'); break;}
+			case "site": {$this->load->view('adm_configure_site',$data_settings); $this->load->model('Notification_model'); break;}
 			case "booking": {$this->load->view('adm_configure_booking',$data_settings); break;}
 			default: echo 'test';
 		}
@@ -99,6 +99,15 @@ class Administrator extends CI_Controller {
 		$data['date']=date("d").' '.$this->System_model->month_name(date("m"),true).' '.date("Y");
 		$this->load->view('adm_print',$data);
 	}
-
-
+// -----------------------------------------------------------------------------
+//отправка тестового SMS сообщения сообщений
+		public function send_message($id=false)
+		{
+			$this->load->model('Notification_model');
+			switch ($id) {
+				case 'sms': {$this->Notification_model->sms_send_administrator_test(); break;}
+				case 'email': {$this->Notification_model->email_send_administrator_test(); break;}
+				default: {break;}
+			}
+		}
 }
