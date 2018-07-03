@@ -84,8 +84,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
             <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Сохранить</button>
-            <? if(!empty($time)) {?><a class="btn btn-primary" data-toggle="modal" href="#test" role="button" aria-expanded="false" aria-controls="collapseExample">Показать расписание</a>
-            <? } ?>
           </form>
         </div>
       </div>

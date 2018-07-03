@@ -67,7 +67,10 @@ class Administrator extends CI_Controller {
 //вывод всех
 	public function booking_all()
 	{
-
+		$array = $this->Booking_model->all_view_booking();
+		$this->load->view('adm_top');
+		$this->load->view('adm_booking_all',$array);
+		$this->load->view('footer');
 	}
 // -----------------------------------------------------------------------------
 //отображение брони на ближайшие три дня
@@ -107,7 +110,20 @@ class Administrator extends CI_Controller {
 			switch ($id) {
 				case 'sms': {$this->Notification_model->sms_send_administrator_test(); break;}
 				case 'email': {$this->Notification_model->email_send_administrator_test(); break;}
-				default: {break;}
+				default: {echo 'Ошибка запроса.'; break;}
 			}
 		}
+// -----------------------------------------------------------------------------
+//Отмена бронии
+		public function cancelbooking($key)
+		{
+			$this->Booking_model->cancel_booking($key,'adm');
+		}
+// -----------------------------------------------------------------------------
+//Подтверждение брони
+		public function confirmbooking($key)
+		{
+			$this->Booking_model->confirm_booking($key,'adm');
+		}
+
 }

@@ -238,6 +238,17 @@ class Booking_model extends CI_Model {
 			'email' => $this->encryption->encrypt($i['email_user']),
 			'note' => ''
 		);
+		$this->load->model('Notification_model');
+		if($config['notification_email']=='1')
+			{
+				$array_email=array($i['reservation_number'],$i['date'].' '.$i['time'],$i['name_user'],$i['email_user']);
+				$this->Notification_model->email_send_user($array_email);
+			}
+		if($config['notification_sms']=='1')
+			{
+				$array_sms=array($i['reservation_number'],$i['date'].' '.$i['time'],$i['name_user'],$i['phone_user']);
+				$this->Notification_model->sms_send_user($array_sms);
+			}
 		$result = $this->db->insert('BOOKING',$array); //занесение в базу
 		return $i['reservation_number'];  // возврат номера бронирования
 	}
@@ -281,13 +292,13 @@ class Booking_model extends CI_Model {
 			$booking = $booking->result_array(); //вытаскиваем всё
 			foreach ($booking as $v) {
 				$time_array=$this->decode_text($v); // декод
-				if($this->System_model->number_of_day(data("d.m.Y"),$time_array['DATE'])>0) { //проверяем актуальные брони
-					if($time_array['STATUS']==1) //если бронь подтверждена заносим в массив open
+				if($this->System_model->number_of_day(date("d.m.Y"),$time_array['DATE'])>0) { //проверяем актуальные брони
+					if($time_array['STATUS']=='1') //если бронь подтверждена заносим в массив open
 						$result['open'][]=$time_array; else {
 							$result['expect'][]=$time_array; //в противном случае в массив expect
 						}
 				} else {
-					$resuls['close']=$time_array; // если дата брони уже прошла.
+					$result['close'][]=$time_array; // если дата брони уже прошла.
 				}
 			}
 			return $result;
@@ -307,8 +318,8 @@ class Booking_model extends CI_Model {
 				'MIDDLENAME'=>$this->encryption->decrypt($i['MIDDLENAME']),
 				'PHONE'=>$this->encryption->decrypt($i['PHONE']),
 				'EMAIL'=>$this->encryption->decrypt($i['EMAIL']),
-				'STATUS'=>$i['STATUS']);
-
+				'STATUS'=>$i['STATUS'],
+				'KEY'=>coding($i['RESERVATION_NUMBER']));
 		return $result;
 	}
 
@@ -330,5 +341,34 @@ class Booking_model extends CI_Model {
 	}
 
 // -----------------------------------------------------------------------------
+//отмена брони
 
+	function cancel_booking($key,$return)
+	{
+		$nomber = coding($key,true);
+		$result = $this->db->delete('BOOKING',array('RESERVATION_NUMBER'=>$nomber));
+		if($result) {
+			switch ($return) {
+				case 'user': redirect("/"); break;
+				case 'adm': redirect('administrator/booking_all'); break;
+				default: redirect('/');
+			}
+		}else redirect('/');
+	}
+
+// -----------------------------------------------------------------------------
+// подтверждение бронии
+
+	function confirm_booking($key,$return)
+	{
+		$nomber = coding($key,true);
+		$this->db->where('RESERVATION_NUMBER',$nomber);
+		$this->db->update('BOOKING', array('STATUS'=>'1'));
+		switch ($return) {
+			case 'user': redirect("/"); break;
+			case 'adm': redirect('administrator/booking_all'); break;
+			default: redirect('/');
+		}
+	}
+// -----------------------------------------------------------------------------
 }

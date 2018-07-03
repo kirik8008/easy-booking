@@ -65,7 +65,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="<?=base_url()?>administrator/booking_add"><i class="fa fa-clock-o"></i> Ожидают подтверждения</a>
               <a class="dropdown-item" href="<?=base_url()?>administrator/reservation"><i class="fa fa-book"></i> Ближайшие</a>
-              <a class="dropdown-item" href="#"><i class="fa fa-calendar"></i> Все брони</a>
+              <a class="dropdown-item" href="<?=base_url()?>administrator/booking_all"><i class="fa fa-calendar"></i> Все брони</a>
               <a class="dropdown-item" href="<?=base_url()?>administrator/print_booking"><i class="fa fa-print"></i> На печать</a>
             </div>
           </li>

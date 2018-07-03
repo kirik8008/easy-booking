@@ -72,13 +72,35 @@ class Notification_model extends CI_Model {
 */
 	public function sms_send_user($array)
 	{
-		if($this->settings['sms_api']!='' and $this->settings['notification_sms']!='1'){
+		if($this->settings['sms_api']!='' and $this->settings['notification_sms']=='1'){
 			$smsru = new SMSRU($this->settings['sms_api']);
 			$data = new stdClass();
 			$data->to = $array[3];
 			$data->text = $array[2].', ваша бронь №'.$array[0].' на '.$array[1]; // Текст сообщения
-			$sms = $smsru->send_one($data); // Отправка сообщения и возврат данных в переменную но данные пока что не используем)
+			$sms = $smsru->send_one($data); // Отправка сообщения и возврат данных в переменную но данные пока что не используем)s
 		}
 	}
+
+// -----------------------------------------------------------------------------
+/*
+Отправка номера бронирования пользователю на почту
+получаем массив ('номер брони','дату и время','имя','почту')
+*/
+	public function email_send_user($array)
+	{
+		if($this->settings['notification_email']=='1'){
+					if($this->settings['automatic_confirmation']=='1') $automatic_confirmation = ' подтверждена, мы ожидаем вас '.$array[1];
+					else $automatic_confirmation = ' на '.$array[1];
+					$text = $array[2].', ваша бронь №'.$array[0].$automatic_confirmation;
+					if($this->settings['smtp_host']!='' and $this->settings['smtp_user']!='' and $this->settings['smtp_pass']!=''){
+						$this->load->library('email', $this->config);
+						$this->email->from($this->settings['email_admin'], $this->settings['name_site']);
+						$this->email->to($array[3]);
+						$this->email->subject('Бронь №'.$array[0].' '.$this->settings['name_site']);
+						$this->email->message($text);
+						$this->email->send();
+					}
+		}
+		}
 
 }
